@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon.clone | Spend less. Smile more.</title>
+  <!-- Bootstrap 5 CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- AOS Animation CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --amz-navy: #131921;
+      --amz-slate: #232f3e;
+      --amz-yellow: #ffd814;
+      --amz-yellow-hover: #f7ca00;
+      --amz-orange: #ffa41c;
+      --amz-orange-hover: #fa8900;
+      --amz-accent: #febd69;
+      --amz-bg: #e3e6e6;
+      --amz-link: #007185;
+      --amz-link-hover: #c7511f;
+    }
+
+    body {
+      background-color: var(--amz-bg);
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #0f1111;
+      overflow-x: hidden;
+    }
+
+    /* Multi-View Page Transition Animation */
+    .page-view {
+      display: none;
+      animation: pageFadeIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Navbar & Subnav */
+    .amz-navbar {
+      background-color: var(--amz-navy);
+      padding: 0.5rem 1rem;
+    }
+
+    .amz-subnav {
+      background-color: var(--amz-slate);
+      font-size: 0.9rem;
+    }
+
+    .nav-hover {
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 6px 8px;
+      transition: border-color 0.15s ease;
+      color: #fff !important;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-hover:hover {
+      border-color: #fff;
+    }
+
+    /* Search Bar */
+    .amz-search-group {
+      border-radius: 6px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .amz-search-group:focus-within {
+      border-color: var(--amz-orange);
+      box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.35);
+    }
+
+    .amz-search-btn {
+      background-color: var(--amz-accent);
+      border: none;
+      color: #111;
+    }
+
+    .amz-search-btn:hover {
+      background-color: #f3a847;
+    }
+
+    /* Hero Banner Fade Mask */
+    .hero-wrapper {
+      position: relative;
+      margin-bottom: -180px;
+      z-index: 1;
+    }
+
+    .hero-wrapper::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: linear-gradient(to bottom, rgba(227, 230, 230, 0), var(--amz-bg));
+      pointer-events: none;
+    }
+
+    .hero-img {
+      height: 520px;
+      object-fit: cover;
+    }
+
+    /* Cards & Hover Micro-Interactions */
+    .amz-card {
+      background: #fff;
+      border: none;
+      border-radius: 4px;
+      z-index: 2;
+      position: relative;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+    }
+
+    .amz-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .product-img-wrap {
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8f9fa;
+      padding: 15px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .product-img-wrap img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      transition: transform 0.35s ease;
+    }
+
+    .amz-card:hover .product-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    /* Buttons */
+    .btn-amz-yellow {
+      background-color: var(--amz-yellow);
+      border: 1px solid #fcd200;
+      border-radius: 20px;
+      color: #0f1111;
+      font-weight: 500;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-amz-yellow:hover {
+      background-color: var(--amz-yellow-hover);
+    }
+
+    .btn-amz-yellow:active {
+      transform: scale(0.97);
+    }
+
+    .btn-amz-orange {
+      background-color: var(--amz-orange);
+      border: 1px solid #ff8f00;
+      border-radius: 20px;
+      color: #0f1111;
+      font-weight: 500;
+    }
+
+    .btn-amz-orange:hover {
+      background-color: var(--amz-orange-hover);
+    }
+
+    .amz-link {
+      color: var(--amz-link);
+      text-decoration: none;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .amz-link:hover {
+      color: var(--amz-link-hover);
+      text-decoration: underline;
+    }
+
+    /* Cart Badge Pulse */
+    @keyframes badgePop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    .badge-pop {
+      animation: badgePop 0.35s ease;
+    }
+
+    /* Footer */
+    .amz-back-top {
+      background-color: #37475a;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .amz-back-top:hover {
+      background-color: #485769;
+    }
+
+    .amz-footer {
+      background-color: var(--amz-slate);
+      color: #ddd;
+    }
+
+    .amz-footer-bottom {
+      background-color: var(--amz-navy);
+      color: #999;
+    }
+
+    @media (max-width: 768px) {
+      .hero-wrapper {
+        margin-bottom: -60px;
+      }
+      .hero-img {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PERSISTENT HEADER -->
+  <header class="sticky-top shadow-sm">
+    <nav class="amz-navbar d-flex align-items-center justify-content-between gap-2">
+      <a onclick="navigateTo('home')" class="nav-hover d-flex align-items-center">
+        <span class="fs-4 fw-bold">amazon<span class="text-warning">.clone</span></span>
+      </a>
+
+      <a onclick="navigateTo('products')" class="nav-hover d-none d-lg-flex align-items-center">
+        <i class="bi bi-geo-alt fs-5 me-1"></i>
+        <div class="lh-1">
+          <small class="text-secondary d-block" style="font-size: 0.72rem;">Deliver to</small>
+          <span class="fw-bold small">Global Shipping</span>
+        </div>
+      </a>
+
+      <!-- Search Bar -->
+      <form onsubmit="handleGlobalSearch(event)" class="flex-grow-1 mx-2">
+        <div class="input-group amz-search-group">
+          <select id="global-search-cat" class="form-select bg-light border-0 d-none d-md-block" style="max-width: 130px; font-size: 0.85rem;">
+            <option value="All">All</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Computers">Computers</option>
+            <option value="Home & Kitchen">Home</option>
+            <option value="Fashion">Fashion</option>
+          </select>
+          <input type="text" id="global-search-input" class="form-control border-0" placeholder="Search Amazon.clone">
+          <button class="btn amz-search-btn px-3" type="submit"><i class="bi bi-search fs-5"></i></button>
+        </div>
+      </form>
+
+      <a onclick="navigateTo('products')" class="nav-hover d-none d-md-block lh-1">
+        <small class="d-block" style="font-size: 0.72rem;">Hello, Sign in</small>
+        <span class="fw-bold small">Account & Lists</span>
+      </a>
+
+      <a onclick="navigateTo('cart')" class="nav-hover d-flex align-items-end position-relative">
+        <i class="bi bi-cart3 fs-2"></i>
+        <span id="cart-count" class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-warning text-dark fw-bold">0</span>
+        <span class="fw-bold small ms-1 d-none d-sm-inline">Cart</span>
+      </a>
+    </nav>
+
+    <!-- Sub Navigation -->
+    <div class="amz-subnav px-3 py-1 d-flex align-items-center gap-3 overflow-auto text-nowrap">
+      <a onclick="navigateTo('home')" class="nav-hover py-1 fw-bold"><i class="bi bi-house-door me-1"></i>Home</a>
+      <a onclick="navigateTo('products', {category: 'All'})" class="nav-hover py-1">All Products</a>
+      <a onclick="navigateTo('products', {category: 'Electronics'})" class="nav-hover py-1">Electronics</a>
+      <a onclick="navigateTo('products', {category: 'Computers'})" class="nav-hover py-1">Computers</a>
+      <a onclick="navigateTo('products', {category: 'Home & Kitchen'})" class="nav-hover py-1">Home & Kitchen</a>
+      <a onclick="navigateTo('products', {category: 'Fashion'})" class="nav-hover py-1">Fashion</a>
+      <a onclick="navigateTo('products', {category: 'All'})" class="nav-hover py-1 text-warning">Today's Deals</a>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       VIEW 1: HOME PAGE
+  ========================================================= -->
+  <div id="view-home" class="page-view active">
+    <!-- Hero Carousel -->
+    <div id="heroCarousel" class="carousel slide hero-wrapper" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-img" alt="Deals">
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-img" alt="Electronics">
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=1600&q=80" class="d-block w-100 hero-img" alt="Home Decor">
+        </div>
+      </div>
+      <button class="carousel-control-prev align-items-start pt-5" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next align-items-start pt-5" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+
+    <!-- Main Home Content -->
+    <main class="container-fluid px-3 px-lg-4 position-relative" style="z-index: 5;">
+      <!-- 4 Category Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
+          <div class="card amz-card h-100 p-3">
+            <h5 class="fw-bold">Upgrade Your Audio</h5>
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" class="my-2 rounded object-fit-cover" style="height: 240px;" alt="Audio">
+            <a onclick="navigateTo('products', {category: 'Electronics'})" class="amz-link mt-auto">Shop Electronics</a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="card amz-card h-100 p-3">
+            <h5 class="fw-bold">Home & Kitchen Essentials</h5>
+            <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=500&q=80" class="my-2 rounded object-fit-cover" style="height: 240px;" alt="Kitchen">
+            <a onclick="navigateTo('products', {category: 'Home & Kitchen'})" class="amz-link mt-auto">Explore Home</a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+          <div class="card amz-card h-100 p-3">
+            <h5 class="fw-bold">Pro Workspace Gear</h5>
+            <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80" class="my-2 rounded object-fit-cover" style="height: 240px;" alt="Computers">
+            <a onclick="navigateTo('products', {category: 'Computers'})" class="amz-link mt-auto">Shop Computers</a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="card amz-card h-100 p-3">
+            <h5 class="fw-bold">Travel & Everyday Style</h5>
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80" class="my-2 rounded object-fit-cover" style="height: 240px;" alt="Fashion">
+            <a onclick="navigateTo('products', {category: 'Fashion'})" class="amz-link mt-auto">See Fashion Deals</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending Products Strip -->
+      <section class="bg-white p-4 rounded shadow-sm mb-5" data-aos="fade-up">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="fw-bold mb-0">Today's Top Deals</h4>
+          <a onclick="navigateTo('products', {category: 'All'})" class="amz-link fw-semibold">See all deals <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-3" id="featured-products"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       VIEW 2: PRODUCTS CATALOG PAGE
+  ========================================================= -->
+  <div id="view-products" class="page-view bg-white">
+    <!-- Results Bar -->
+    <div class="border-bottom py-2 px-4 bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <span id="results-label" class="small fw-semibold">Showing all results</span>
+      <div class="d-flex align-items-center gap-2">
+        <label class="small text-muted">Sort by:</label>
+        <select id="sort-select" class="form-select form-select-sm w-auto" onchange="filterAndRenderCatalog()">
+          <option value="featured">Featured</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+          <option value="rating">Avg. Customer Review</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Catalog Layout -->
+    <div class="container-fluid px-4 py-4">
+      <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <aside class="col-12 col-md-3 col-lg-2 border-end">
+          <h6 class="fw-bold">Department</h6>
+          <div class="list-group list-group-flush small mb-4" id="category-filters">
+            <button class="list-group-item list-group-item-action border-0 px-0 py-1 fw-bold text-warning" data-cat="All">All Departments</button>
+            <button class="list-group-item list-group-item-action border-0 px-0 py-1" data-cat="Electronics">Electronics</button>
+            <button class="list-group-item list-group-item-action border-0 px-0 py-1" data-cat="Computers">Computers</button>
+            <button class="list-group-item list-group-item-action border-0 px-0 py-1" data-cat="Home & Kitchen">Home & Kitchen</button>
+            <button class="list-group-item list-group-item-action border-0 px-0 py-1" data-cat="Fashion">Fashion</button>
+          </div>
+
+          <h6 class="fw-bold">Delivery</h6>
+          <div class="form-check small mb-4">
+            <input class="form-check-input" type="checkbox" id="prime-only" onchange="filterAndRenderCatalog()">
+            <label class="form-check-label fw-bold text-primary" for="prime-only">
+              <i class="bi bi-check-lg text-warning"></i>Prime Eligible
+            </label>
+          </div>
+
+          <h6 class="fw-bold">Max Price: <span id="price-val" class="text-danger">$1500</span></h6>
+          <input type="range" class="form-range" min="50" max="1500" step="50" value="1500" id="price-range" oninput="document.getElementById('price-val').textContent='$'+this.value; filterAndRenderCatalog()">
+        </aside>
+
+        <!-- Product Grid -->
+        <section class="col-12 col-md-9 col-lg-10">
+          <div class="row g-3" id="catalog-grid"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       VIEW 3: SINGLE PRODUCT DETAIL PAGE
+  ========================================================= -->
+  <div id="view-detail" class="page-view bg-white">
+    <main class="container py-4">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+          <li class="breadcrumb-item"><a onclick="navigateTo('home')" class="amz-link">Home</a></li>
+          <li class="breadcrumb-item"><a onclick="navigateTo('products')" class="amz-link">Products</a></li>
+          <li class="breadcrumb-item active" id="crumb-title">Item</li>
+        </ol>
+      </nav>
+
+      <div class="row g-4" id="product-detail-container"></div>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       VIEW 4: SHOPPING CART & CHECKOUT PAGE
+  ========================================================= -->
+  <div id="view-cart" class="page-view">
+    <main class="container-fluid px-4 py-4">
+      <div class="row g-4">
+        <!-- Cart Items List -->
+        <div class="col-12 col-lg-9">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <div class="d-flex justify-content-between align-items-end border-bottom pb-2 mb-3">
+              <h3 class="fw-bold mb-0">Shopping Cart</h3>
+              <span class="text-muted small d-none d-sm-inline">Price</span>
+            </div>
+            <div id="cart-items-list"></div>
+            <div class="text-end pt-3 fs-5">
+              Subtotal (<span id="subtotal-count">0</span> items): <strong id="subtotal-bottom">$0.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Summary Box -->
+        <div class="col-12 col-lg-3">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <div class="small text-success mb-2">
+              <i class="bi bi-check-circle-fill"></i> Your order qualifies for FREE Shipping.
+            </div>
+            <div class="fs-5 mb-3">
+              Subtotal (<span id="side-count">0</span> items): <strong id="side-total">$0.00</strong>
+            </div>
+            <button onclick="checkoutOrder()" class="btn btn-amz-yellow w-100 py-2">Proceed to Checkout</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ORDER CONFIRMATION MODAL -->
+  <div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center p-4">
+        <i class="bi bi-check-circle-fill text-success display-3 mb-2"></i>
+        <h4 class="fw-bold">Order Placed Successfully!</h4>
+        <p class="text-muted small">Thank you for shopping with Amazon.clone. Your simulated order is on its way.</p>
+        <button data-bs-dismiss="modal" onclick="navigateTo('home')" class="btn btn-amz-yellow mt-2">Return to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSISTENT FOOTER -->
+  <div class="amz-back-top text-center py-3 small fw-semibold" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    Back to top
+  </div>
+  <footer class="amz-footer py-5">
+    <div class="container">
+      <div class="row g-4 small">
+        <div class="col-6 col-md-3">
+          <h6 class="text-white fw-bold">Get to Know Us</h6>
+          <ul class="list-unstyled lh-lg">
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Careers</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Blog</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">About Amazon Clone</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="text-white fw-bold">Make Money with Us</h6>
+          <ul class="list-unstyled lh-lg">
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Sell products</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Become an Affiliate</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Advertise Your Products</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="text-white fw-bold">Amazon Payment Products</h6>
+          <ul class="list-unstyled lh-lg">
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Rewards Visa Card</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Shop with Points</a></li>
+            <li><a onclick="navigateTo('products')" class="text-decoration-none text-light" style="cursor:pointer;">Reload Your Balance</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="text-white fw-bold">Let Us Help You</h6>
+          <ul class="list-unstyled lh-lg">
+            <li><a onclick="navigateTo('cart')" class="text-decoration-none text-light" style="cursor:pointer;">Your Account</a></li>
+            <li><a onclick="navigateTo('cart')" class="text-decoration-none text-light" style="cursor:pointer;">Your Orders</a></li>
+            <li><a onclick="navigateTo('cart')" class="text-decoration-none text-light" style="cursor:pointer;">Shipping Rates & Policies</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <div class="amz-footer-bottom text-center py-3 small">
+    &copy; 2026 Amazon Clone Single-File Multi-View Prototype. Built with HTML5, Bootstrap 5 & AOS.
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // ==========================================
+    // 1. PRODUCT DATABASE
+    // ==========================================
+    const PRODUCTS = [
+      {
+        id: 1,
+        title: "Sony WH-1000XM5 Wireless Noise Canceling Headphones",
+        category: "Electronics",
+        price: 348.00,
+        oldPrice: 399.99,
+        rating: 4.8,
+        reviews: 12450,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=600&q=80",
+        description: "Industry-leading noise cancellation powered by two processors controlling 8 microphones. Up to 30-hour battery life with quick charging."
+      },
+      {
+        id: 2,
+        title: "Apple Watch Series 10 GPS 45mm Aluminum Case",
+        category: "Electronics",
+        price: 399.00,
+        oldPrice: 429.00,
+        rating: 4.9,
+        reviews: 8930,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=600&q=80",
+        description: "Thinner, lighter design with a larger Always-On Retina display, advanced health sensors, and fast charging."
+      },
+      {
+        id: 3,
+        title: "Mechanical RGB Gaming Keyboard - Tactile Brown Switches",
+        category: "Computers",
+        price: 89.99,
+        oldPrice: 119.99,
+        rating: 4.6,
+        reviews: 4312,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=600&q=80",
+        description: "Aircraft-grade aluminum frame, customizable per-key RGB backlighting, and hot-swappable mechanical switches."
+      },
+      {
+        id: 4,
+        title: "Minimalist Espresso Machine with Milk Frother Steam Wand",
+        category: "Home & Kitchen",
+        price: 179.50,
+        oldPrice: 229.00,
+        rating: 4.5,
+        reviews: 6720,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=600&q=80",
+        description: "15-bar Italian pump pressure extracts rich crema espresso with a stainless steel micro-foam milk frother."
+      },
+      {
+        id: 5,
+        title: "Ergonomic Mesh Office Chair with Adjustable Lumbar Support",
+        category: "Home & Kitchen",
+        price: 215.00,
+        oldPrice: 279.99,
+        rating: 4.4,
+        reviews: 3190,
+        prime: false,
+        image: "https://images.unsplash.com/photo-1505843490538-5133c6c7d0e1?auto=format&fit=crop&w=600&q=80",
+        description: "Breathable high-elastic mesh back, 3D adjustable armrests, and synchronized tilt mechanism for all-day comfort."
+      },
+      {
+        id: 6,
+        title: "Classic Polarized Aviator Sunglasses - UV400 Protection",
+        category: "Fashion",
+        price: 45.00,
+        oldPrice: 65.00,
+        rating: 4.7,
+        reviews: 9540,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80",
+        description: "Lightweight alloy metal frame with glare-reducing polarized lenses and scratch-resistant coating."
+      },
+      {
+        id: 7,
+        title: "4K Ultra HD Mirrorless Camera Body + 28-70mm Lens Kit",
+        category: "Electronics",
+        price: 1198.00,
+        oldPrice: 1399.00,
+        rating: 4.9,
+        reviews: 2150,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
+        description: "24.2MP full-frame sensor, real-time Eye AF, 5-axis in-body image stabilization, and 4K 60p video recording."
+      },
+      {
+        id: 8,
+        title: "Waterproof Travel Laptop Backpack with USB Charging Port",
+        category: "Fashion",
+        price: 39.99,
+        oldPrice: 54.99,
+        rating: 4.6,
+        reviews: 18400,
+        prime: true,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
+        description: "Fits up to 17-inch laptops, anti-theft hidden back pocket, luggage strap, and durable water-repellent fabric."
+      }
+    ];
+
+    // ==========================================
+    // 2. MULTI-PAGE SPA ROUTER
+    // ==========================================
+    let currentCategory = "All";
+    let currentSearch = "";
+
+    function navigateTo(viewName, params = {}) {
+      // Hide all views
+      document.querySelectorAll(".page-view").forEach(v => v.classList.remove("active"));
+
+      // Show requested view
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.add("active");
+
+      // Handle view-specific logic
+      if (viewName === "products") {
+        if (params.category !== undefined) {
+          currentCategory = params.category;
+          updateSidebarActiveCategory(currentCategory);
+        }
+        if (params.search !== undefined) {
+          currentSearch = params.search;
+        }
+        filterAndRenderCatalog();
+      } else if (viewName === "detail") {
+        renderProductDetail(params.id || 1);
+      } else if (viewName === "cart") {
+        renderCartPage();
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (typeof AOS !== "undefined") AOS.refresh();
+    }
+
+    // ==========================================
+    // 3. CART STATE & HELPERS
+    // ==========================================
+    function getCart() {
+      return JSON.parse(localStorage.getItem("amz_cart")) || [];
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem("amz_cart", JSON.stringify(cart));
+      updateCartBadge();
+    }
+
+    function addToCart(productId, qty = 1) {
+      const cart = getCart();
+      const existing = cart.find(item => item.id === productId);
+      if (existing) existing.qty += qty;
+      else cart.push({ id: productId, qty: qty });
+
+      saveCart(cart);
+      showToast("Added to Cart!");
+
+      const badge = document.getElementById("cart-count");
+      if (badge) {
+        badge.classList.remove("badge-pop");
+        void badge.offsetWidth;
+        badge.classList.add("badge-pop");
+      }
+    }
+
+    function updateCartBadge() {
+      const totalItems = getCart().reduce((sum, item) => sum + item.qty, 0);
+      const badge = document.getElementById("cart-count");
+      if (badge) badge.textContent = totalItems;
+    }
+
+    function showToast(message) {
+      let toastContainer = document.getElementById("amz-toast-container");
+      if (!toastContainer) {
+        toastContainer = document.createElement("div");
+        toastContainer.id = "amz-toast-container";
+        toastContainer.className = "position-fixed bottom-0 end-0 p-3";
+        toastContainer.style.zIndex = "1080";
+        document.body.appendChild(toastContainer);
+      }
+      const toastEl = document.createElement("div");
+      toastEl.className = "toast align-items-center text-bg-dark border-0 show mb-2";
+      toastEl.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body"><i class="bi bi-check-circle-fill text-warning me-2"></i>${message}</div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>`;
+      toastContainer.appendChild(toastEl);
+      setTimeout(() => toastEl.remove(), 2500);
+    }
+
+    function renderStars(rating) {
+      let stars = "";
+      for (let i = 1; i <= 5; i++) {
+        if (rating >= i) stars += '<i class="bi bi-star-fill text-warning"></i>';
+        else if (rating >= i - 0.5) stars += '<i class="bi bi-star-half text-warning"></i>';
+        else stars += '<i class="bi bi-star text-warning"></i>';
+      }
+      return stars;
+    }
+
+    function handleGlobalSearch(e) {
+      e.preventDefault();
+      const query = document.getElementById("global-search-input").value.trim();
+      const category = document.getElementById("global-search-cat")?.value || "All";
+      navigateTo("products", { search: query, category: category });
+    }
+
+    // ==========================================
+    // 4. VIEW RENDERERS (HOME, CATALOG, DETAIL, CART)
+    // ==========================================
+    function renderHomeFeatured() {
+      const featuredContainer = document.getElementById("featured-products");
+      featuredContainer.innerHTML = "";
+      PRODUCTS.slice(0, 4).forEach(p => {
+        featuredContainer.innerHTML += `
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card amz-card border h-100">
+              <div onclick="navigateTo('detail', {id: ${p.id}})" class="product-img-wrap">
+                <img src="${p.image}" alt="${p.title}">
+              </div>
+              <div class="card-body d-flex flex-column">
+                <span class="badge bg-danger w-auto align-self-start mb-2">Limited time deal</span>
+                <a onclick="navigateTo('detail', {id: ${p.id}})" class="text-dark text-decoration-none fw-semibold mb-1 text-truncate" style="cursor:pointer;">${p.title}</a>
+                <div class="small mb-1">${renderStars(p.rating)} <span class="text-muted">(${p.reviews.toLocaleString()})</span></div>
+                <div class="fs-5 fw-bold mb-2">$${p.price.toFixed(2)} <small class="text-muted text-decoration-line-through fs-6">$${p.oldPrice.toFixed(2)}</small></div>
+                <button onclick="addToCart(${p.id})" class="btn btn-amz-yellow btn-sm mt-auto">Add to Cart</button>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function updateSidebarActiveCategory(cat) {
+      document.querySelectorAll("#category-filters button").forEach(btn => {
+        btn.classList.remove("fw-bold", "text-warning");
+        if (btn.dataset.cat === cat) btn.classList.add("fw-bold", "text-warning");
+      });
+    }
+
+    document.querySelectorAll("#category-filters button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentCategory = btn.dataset.cat;
+        currentSearch = "";
+        document.getElementById("global-search-input").value = "";
+        updateSidebarActiveCategory(currentCategory);
+        filterAndRenderCatalog();
+      });
+    });
+
+    function filterAndRenderCatalog() {
+      const primeOnly = document.getElementById("prime-only").checked;
+      const maxPrice = parseFloat(document.getElementById("price-range").value);
+      const sortBy = document.getElementById("sort-select").value;
+
+      let filtered = PRODUCTS.filter(p => {
+        const matchCat = currentCategory === "All" || p.category === currentCategory;
+        const matchSearch = !currentSearch || p.title.toLowerCase().includes(currentSearch.toLowerCase()) || p.category.toLowerCase().includes(currentSearch.toLowerCase());
+        const matchPrime = !primeOnly || p.prime;
+        const matchPrice = p.price <= maxPrice;
+        return matchCat && matchSearch && matchPrime && matchPrice;
+      });
+
+      if (sortBy === "low") filtered.sort((a, b) => a.price - b.price);
+      if (sortBy === "high") filtered.sort((a, b) => b.price - a.price);
+      if (sortBy === "rating") filtered.sort((a, b) => b.rating - a.rating);
+
+      document.getElementById("results-label").textContent = `${filtered.length} results for "${currentSearch || currentCategory}"`;
+      const grid = document.getElementById("catalog-grid");
+      grid.innerHTML = filtered.length ? "" : `<div class="col-12 text-center py-5"><h5>No products match your filters.</h5></div>`;
+
+      filtered.forEach(p => {
+        grid.innerHTML += `
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+            <div class="card amz-card border h-100">
+              <div onclick="navigateTo('detail', {id: ${p.id}})" class="product-img-wrap">
+                <img src="${p.image}" alt="${p.title}">
+              </div>
+              <div class="card-body d-flex flex-column">
+                <a onclick="navigateTo('detail', {id: ${p.id}})" class="text-dark text-decoration-none fw-semibold mb-1" style="cursor:pointer;">${p.title}</a>
+                <div class="small mb-1">${renderStars(p.rating)} <span class="text-muted">(${p.reviews.toLocaleString()})</span></div>
+                <div class="fs-4 fw-bold">$${p.price.toFixed(2)}</div>
+                <div class="small text-muted text-decoration-line-through mb-1">List: $${p.oldPrice.toFixed(2)}</div>
+                ${p.prime ? `<div class="small fw-bold text-primary mb-2"><i class="bi bi-check-lg text-warning"></i>prime <span class="text-muted fw-normal">FREE delivery</span></div>` : `<div class="small text-muted mb-2">Standard Shipping</div>`}
+                <button onclick="addToCart(${p.id})" class="btn btn-amz-yellow btn-sm mt-auto">Add to Cart</button>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function renderProductDetail(id) {
+      const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+      document.getElementById("crumb-title").textContent = product.category;
+
+      document.getElementById("product-detail-container").innerHTML = `
+        <div class="col-12 col-md-5 text-center">
+          <div class="border rounded p-4 bg-light">
+            <img src="${product.image}" alt="${product.title}" class="img-fluid rounded" style="max-height: 420px; object-fit: contain;">
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <span class="badge bg-secondary mb-2">${product.category}</span>
+          <h3 class="fw-bold">${product.title}</h3>
+          <div class="mb-2">${renderStars(product.rating)} <span class="amz-link ms-2">${product.reviews.toLocaleString()} ratings</span></div>
+          <hr>
+          <div class="mb-2">
+            <span class="text-danger fs-4 fw-light">-${Math.round((1 - product.price / product.oldPrice) * 100)}%</span>
+            <span class="fs-2 fw-bold ms-2">$${product.price.toFixed(2)}</span>
+          </div>
+          <p class="small text-muted">List Price: <span class="text-decoration-line-through">$${product.oldPrice.toFixed(2)}</span></p>
+          <hr>
+          <h6 class="fw-bold">About this item</h6>
+          <p class="small lh-base">${product.description}</p>
+          <ul class="small text-muted">
+            <li>100% Authentic Verified Brand Warranty</li>
+            <li>30-day hassle-free return policy</li>
+            <li>24/7 Customer Support included</li>
+          </ul>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="card p-3 border rounded-3 shadow-sm">
+            <div class="fs-3 fw-bold mb-1">$${product.price.toFixed(2)}</div>
+            ${product.prime ? `<div class="small fw-bold text-primary mb-2"><i class="bi bi-check-lg text-warning"></i>prime <span class="text-dark fw-normal">FREE Overnight Delivery</span></div>` : ""}
+            <div class="text-success fw-bold fs-5 mb-3">In Stock</div>
+
+            <label class="small fw-semibold mb-1">Quantity:</label>
+            <select id="detail-qty" class="form-select form-select-sm mb-3">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+
+            <button onclick="addToCart(${product.id}, parseInt(document.getElementById('detail-qty').value))" class="btn btn-amz-yellow w-100 mb-2">Add to Cart</button>
+            <button onclick="addToCart(${product.id}, parseInt(document.getElementById('detail-qty').value)); navigateTo('cart')" class="btn btn-amz-orange w-100 mb-3">Buy Now</button>
+
+            <div class="small text-muted">
+              <div class="d-flex justify-content-between"><span>Ships from</span><span class="text-dark">Amazon.clone</span></div>
+              <div class="d-flex justify-content-between"><span>Sold by</span><span class="text-dark">Amazon.clone</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCartPage() {
+      const cart = getCart();
+      const container = document.getElementById("cart-items-list");
+      let totalQty = 0;
+      let totalPrice = 0;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5">
+            <h5>Your Amazon Cart is empty.</h5>
+            <button onclick="navigateTo('products')" class="btn btn-amz-yellow mt-3">Shop Today's Deals</button>
+          </div>`;
+      } else {
+        container.innerHTML = "";
+        cart.forEach(item => {
+          const p = PRODUCTS.find(prod => prod.id === item.id);
+          if (!p) return;
+          totalQty += item.qty;
+          totalPrice += p.price * item.qty;
+
+          container.innerHTML += `
+            <div class="row align-items-center border-bottom py-3 g-3">
+              <div class="col-4 col-sm-2 text-center">
+                <img src="${p.image}" alt="${p.title}" class="img-fluid rounded" style="max-height: 110px; object-fit: contain; cursor:pointer;" onclick="navigateTo('detail', {id: ${p.id}})">
+              </div>
+              <div class="col-8 col-sm-8">
+                <a onclick="navigateTo('detail', {id: ${p.id}})" class="text-dark text-decoration-none fw-bold fs-6" style="cursor:pointer;">${p.title}</a>
+                <div class="text-success small my-1">In Stock</div>
+                ${p.prime ? `<div class="small fw-bold text-primary mb-2"><i class="bi bi-check-lg text-warning"></i>prime</div>` : ""}
+                <div class="d-flex align-items-center gap-2 mt-2">
+                  <div class="btn-group btn-group-sm border rounded-pill overflow-hidden">
+                    <button class="btn btn-light px-3" onclick="changeQty(${p.id}, -1)">-</button>
+                    <span class="px-3 py-1 fw-bold bg-white">${item.qty}</span>
+                    <button class="btn btn-light px-3" onclick="changeQty(${p.id}, 1)">+</button>
+                  </div>
+                  <button class="btn btn-link btn-sm text-danger text-decoration-none" onclick="removeItem(${p.id})">Delete</button>
+                </div>
+              </div>
+              <div class="col-12 col-sm-2 text-sm-end fw-bold fs-5">
+                $${(p.price * item.qty).toFixed(2)}
+              </div>
+            </div>`;
+        });
+      }
+
+      document.getElementById("subtotal-count").textContent = totalQty;
+      document.getElementById("side-count").textContent = totalQty;
+      document.getElementById("subtotal-bottom").textContent = `$${totalPrice.toFixed(2)}`;
+      document.getElementById("side-total").textContent = `$${totalPrice.toFixed(2)}`;
+    }
+
+    function changeQty(id, delta) {
+      let cart = getCart();
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+      saveCart(cart);
+      renderCartPage();
+    }
+
+    function removeItem(id) {
+      const cart = getCart().filter(i => i.id !== id);
+      saveCart(cart);
+      renderCartPage();
+    }
+
+    function checkoutOrder() {
+      if (getCart().length === 0) return showToast("Your cart is empty!");
+      localStorage.removeItem("amz_cart");
+      updateCartBadge();
+      renderCartPage();
+      new bootstrap.Modal(document.getElementById("orderModal")).show();
+    }
+
+    // ==========================================
+    // 5. INITIALIZE APP
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      updateCartBadge();
+      renderHomeFeatured();
+      if (typeof AOS !== "undefined") {
+        AOS.init({ duration: 650, once: true, offset: 40 });
+      }
+    });
+  </script>
+</body>
+</html>
